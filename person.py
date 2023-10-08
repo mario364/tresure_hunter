@@ -1,10 +1,10 @@
-from adventurelib import *
 
 class Hero:
     name = 'Лукас'
     level = 1
     hp = 10
-    inventory = Bag([])
+    coins = 0
+    inventory = []
     current_hp = hp
     breaking_skill = 1
     agility_skill = 1
