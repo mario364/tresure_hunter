@@ -1,57 +1,73 @@
+from random import randint
+from func import *
+import stats_func
 from adventurelib import *
 from person import *
-from items import *
 
-room1 = Room('Левая комната с дверью и сундуком. Тест 1')
-room2 = Room('Правая комната с яблоком и его использованием. Тест 1')
+left_room = Room('Левая комната. Тест 1')
+right_room = Room('Правая комната. Тест 1')
+center_room = Room('Центральная комната с дверью. Тест 1')
 current_room = start_room = Room('Это стартовая комната')
-room1.chest = True
-room1.has_item = True
-room2.apple = True
-
-
+start_room.items = Bag()
+left_room.items = Bag([Item('chest')])
+right_room.items = Bag([Item('apple')])
+center_room.items = Bag([Item('door')])
 
 say(current_room)
+
+
 @when('left')
-def left():
+def go_left():
     global current_room
-    current_room = room1
+    current_room = left_room
     print(current_room)
-
-@when('hp')
-def show_hp():
-    print(hero.current_hp)
+    unpacking_room(current_room.items)
 
 
-@when('stats')
-def show_stats():
-    say(f'''Здоровье: {hero.hp}
-    Взлом: {hero.breaking_skill}
-    Ловкость: {hero.agility_skill}
-    Интеллект: {hero.intellect_skill}''')
-
-
-@when('inv')
-def show_inv():
-    for item in hero.inventory:
-        print(item)
-
-
-@when('take THING')
-def take(thing):
+@when('right')
+def go_right():
     global current_room
-    if hasattr(current_room, 'has_item'):
-        print(f'you take {thing}')
-        hero.inventory.append(thing)
-        current_room.has_item = False
+    current_room = right_room
+    print(current_room)
+    unpacking_room(current_room.items)
 
 
-@when('use ITEM on THING')
-def use(item, thing):
-    print(f'you use {item} on {thing}')
+@when('center')
+def go_center():
+    global current_room
+    current_room = center_room
+    print(current_room)
+    unpacking_room(current_room.items)
 
-@when('examine THING')
-def examine(thing):
-    print(f'Вы видите {thing}')
+
+@when('examine ITEM')
+def examine(item):
+    if item in current_room.items:
+        print('Вы открыли дверь. Конец теста')
+    else:
+        print('Здесь нечего изучать')
+
+
+@when('open ITEM')
+def open(item):
+    if item in current_room.items:
+        coin = randint(1, 6)
+        print(f'Вы открыли сундук и получили {coin} монет')
+        hero.coins += coin
+        current_room.items.discard(item)
+    else:
+        print('Тут нету такого')
+
+
+@when('take ITEM')
+def take(item):
+    global current_room
+    if item in current_room.items:
+        print(f'Вы взяли {item}')
+        hero.inventory.add(item)
+        current_room.items.discard(item)
+    else:
+        print('Здесь нет такого')
+
 
 start()
