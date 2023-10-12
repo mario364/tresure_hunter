@@ -11,7 +11,7 @@ current_room = start_room = Room('Это стартовая комната')
 start_room.items = Bag()
 left_room.items = Bag([Item('chest')])
 right_room.items = Bag([Item('apple')])
-center_room.items = Bag([Item('door')])
+center_room.objects = Bag([Item('door')])
 
 say(current_room)
 
@@ -37,24 +37,25 @@ def go_center():
     global current_room
     current_room = center_room
     print(current_room)
-    unpacking_room(current_room.items)
+    unpacking_room(current_room.objects)
 
 
 @when('examine ITEM')
 def examine(item):
-    if item in current_room.items:
-        print('Вы открыли дверь. Конец теста')
+    if item in current_room.objects:
+        print(f'Вы исследовали {item}. Конец теста')
+        current_room.objects.take(item)
     else:
         print('Здесь нечего изучать')
 
 
-@when('open ITEM')
-def open(item):
+@when('interact ITEM')
+def interact(item):
     if item in current_room.items:
         coin = randint(1, 6)
-        print(f'Вы открыли сундук и получили {coin} монет')
+        print(f'Вы взаимодействовали с {item} и получили {coin} монет')
         hero.coins += coin
-        current_room.items.discard(item)
+        current_room.items.take(item)
     else:
         print('Тут нету такого')
 
@@ -65,7 +66,7 @@ def take(item):
     if item in current_room.items:
         print(f'Вы взяли {item}')
         hero.inventory.add(item)
-        current_room.items.discard(item)
+        current_room.items.take(item)
     else:
         print('Здесь нет такого')
 
