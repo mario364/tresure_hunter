@@ -1,4 +1,4 @@
-from random import randint
+from items import *
 from func import *
 import stats_func
 from adventurelib import *
@@ -9,9 +9,9 @@ right_room = Room('Правая комната. Тест 1')
 center_room = Room('Центральная комната с дверью. Тест 1')
 current_room = start_room = Room('Это стартовая комната')
 start_room.items = Bag()
-left_room.items = Bag([Item('chest')])
-right_room.items = Bag([Item('apple')])
-center_room.objects = Bag([Item('door')])
+left_room.items = Bag([Chest('chest')])
+right_room.items = Bag([Apple('apple')])
+center_room.items = Bag([Door('door')])
 
 say(current_room)
 
@@ -37,25 +37,21 @@ def go_center():
     global current_room
     current_room = center_room
     print(current_room)
-    unpacking_room(current_room.objects)
+    unpacking_room(current_room.items)
 
 
-@when('examine ITEM')
-def examine(item):
-    if item in current_room.objects:
-        print(f'Вы исследовали {item}. Конец теста')
-        current_room.objects.take(item)
+@when('use ITEM')
+def use(item):
+    if item in hero.inventory:
+        hero.inventory.take(item).use(hero)
     else:
-        print('Здесь нечего изучать')
+        print('Нет предмета')
 
 
 @when('interact ITEM')
 def interact(item):
     if item in current_room.items:
-        coin = randint(1, 6)
-        print(f'Вы взаимодействовали с {item} и получили {coin} монет')
-        hero.coins += coin
-        current_room.items.take(item)
+        current_room.items.take(item).interact()
     else:
         print('Тут нету такого')
 
@@ -65,8 +61,8 @@ def take(item):
     global current_room
     if item in current_room.items:
         print(f'Вы взяли {item}')
-        hero.inventory.add(item)
-        current_room.items.take(item)
+        hero.inventory.add(current_room.items.take(item))
+
     else:
         print('Здесь нет такого')
 
