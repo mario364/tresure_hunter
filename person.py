@@ -1,5 +1,6 @@
 from adventurelib import Bag
 
+
 class Hero:
     name = 'Лукас'
     level = 1
@@ -8,12 +9,11 @@ class Hero:
     coins = 0
     inventory = Bag()
     current_hp = hp
-    breaking_skill = 1
-    agility_skill = 1
-    intellect_skill = 1
-
+    characteristic = {
+        "breaking_skill": 20,
+        "agility_skill": 10,
+        "intellect_skill": 10
+    }
 
 
 hero = Hero()
-
-

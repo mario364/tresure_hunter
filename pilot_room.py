@@ -4,41 +4,48 @@ import stats_func
 from adventurelib import *
 from person import *
 
-left_room = Room('Левая комната. Тест 1')
-right_room = Room('Правая комната. Тест 1')
-center_room = Room('Центральная комната с дверью. Тест 1')
+north_room = Room('Северная комната. Тест 1')
+south_room = Room('Южная комната. Тест 1')
+west_room = Room('Западная комната с дверью. Тест 1')
+east_room = Room('Восточная комната. Тест кубика')
 current_room = start_room = Room('Это стартовая комната')
 start_room.items = Bag()
-left_room.items = Bag([Chest('chest')])
-right_room.items = Bag([Apple('apple')])
-center_room.items = Bag([Door('door')])
+north_room.items = Bag([Chest('chest')])
+south_room.items = Bag([Apple('apple')])
+west_room.items = Bag([Door('door')])
+east_room.items = Bag([])
 
 say(current_room)
 
 
-@when('left')
-def go_left():
-    global current_room
-    current_room = left_room
+@when('go north')
+def go_north():
+    current_room = north_room
     print(current_room)
     unpacking_room(current_room.items)
 
 
-@when('right')
-def go_right():
+@when('go south')
+def go_south():
     global current_room
-    current_room = right_room
+    current_room = south_room
     print(current_room)
     unpacking_room(current_room.items)
 
 
-@when('center')
-def go_center():
+@when('go west')
+def go_west():
     global current_room
-    current_room = center_room
+    current_room = west_room
     print(current_room)
     unpacking_room(current_room.items)
 
+@when('go east')
+def go_east():
+    global current_room
+    current_room = east_room
+    say(current_room)
+    unpacking_room()
 
 @when('use ITEM')
 def use(item):
@@ -65,6 +72,4 @@ def take(item):
 
     else:
         print('Здесь нет такого')
-
-
 start()

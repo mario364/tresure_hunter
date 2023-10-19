@@ -25,3 +25,4 @@ class Door(Item):
     def interact():
         print('Вы открыли дверь')
 
+
